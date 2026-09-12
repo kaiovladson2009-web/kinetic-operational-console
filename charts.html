@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Kinetic Operational Console | Gráficos</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#2d3135",
+                        "tertiary-container": "#987000",
+                        "primary": "#005bbf",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#ffffff",
+                        "on-tertiary-fixed-variant": "#5c4300",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#00722f",
+                        "surface-container": "#ebeef4",
+                        "surface": "#f7f9ff",
+                        "on-tertiary-container": "#ffffff",
+                        "on-surface": "#181c20",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#6ddd81",
+                        "surface-container-highest": "#dfe3e8",
+                        "tertiary-fixed-dim": "#fbbc06",
+                        "background": "#f7f9ff",
+                        "surface-tint": "#005bc0",
+                        "secondary": "#006e2c",
+                        "on-secondary-fixed": "#002108",
+                        "surface-variant": "#dfe3e8",
+                        "inverse-primary": "#adc7ff",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d7dae0",
+                        "surface-bright": "#f7f9ff",
+                        "secondary-fixed": "#89fa9b",
+                        "outline": "#727785",
+                        "on-tertiary-fixed": "#261a00",
+                        "primary-container": "#1a73e8",
+                        "surface-container-high": "#e5e8ee",
+                        "on-secondary-fixed-variant": "#005320",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f1f4fa",
+                        "on-primary-fixed": "#001a41",
+                        "on-background": "#181c20",
+                        "inverse-on-surface": "#eef1f7",
+                        "primary-fixed-dim": "#adc7ff",
+                        "tertiary-fixed": "#ffdea0",
+                        "tertiary": "#795900",
+                        "secondary-container": "#86f898",
+                        "outline-variant": "#c1c6d6",
+                        "on-surface-variant": "#414754",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "xl": "32px",
+                        "sm": "12px",
+                        "xs": "8px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "margin-desktop": "32px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "display-lg": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            font-variant-numeric: tabular-nums;
+        }
+        .shadow-level-1 {
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .shadow-level-2 {
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .card-hover {
+            transition: all 0.2s ease;
+        }
+        .card-hover:hover {
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        .metric-card {
+            background: #ffffff;
+            border: 1px solid #dfe3e8;
+            border-radius: 0.75rem;
+            padding: 24px;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background-color: #005bbf;
+            color: white;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        .download-btn:hover {
+            background-color: #004493;
+            box-shadow: 0px 8px 16px rgba(0, 91, 191, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 flex justify-between items-center w-full px-margin-desktop bg-surface shadow-level-1 border-b border-outline-variant h-16">
+        <div class="flex items-center gap-xl">
+            <span class="text-headline-md font-headline-md font-bold text-primary">Kinetic</span>
+            <span class="text-body-md text-on-surface-variant hidden sm:block">Gráficos & Análises</span>
+        </div>
+        <div class="flex items-center gap-md">
+            <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">settings</button>
+            <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-white font-bold text-label-md">AD</div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-auto pb-8">
+        <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-xl">
+            <!-- Page Header -->
+            <div class="mb-xl">
+                <h1 class="text-display-lg font-display-lg font-bold mb-xs">Gráficos Visuais</h1>
+                <p class="text-body-md text-on-surface-variant">Análise completa de dados com visualizações em alta qualidade</p>
+            </div>
+
+            <!-- Gráfico 1: Status de Serviços -->
+            <div class="metric-card shadow-level-1 mb-xl">
+                <div class="flex justify-between items-center mb-lg">
+                    <div>
+                        <h3 class="font-headline-sm text-headline-sm">Distribuição de Serviços por Status</h3>
+                        <p class="text-on-surface-variant text-body-md mt-xs">Análise de 206 serviços agrupados por situação atual</p>
+                    </div>
+                    <button class="download-btn" onclick="downloadChart('chartBarServices')">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                        Baixar
+                    </button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartBarServices"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico 2: Receita por Categoria -->
+            <div class="metric-card shadow-level-1 mb-xl">
+                <div class="flex justify-between items-center mb-lg">
+                    <div>
+                        <h3 class="font-headline-sm text-headline-sm">Receita por Categoria de Serviço</h3>
+                        <p class="text-on-surface-variant text-body-md mt-xs">Faturamento agrupado por tipo de profissional</p>
+                    </div>
+                    <button class="download-btn" onclick="downloadChart('chartPieRecipe')">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                        Baixar
+                    </button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartPieRecipe"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico 3: Tendência de Serviços -->
+            <div class="metric-card shadow-level-1 mb-xl">
+                <div class="flex justify-between items-center mb-lg">
+                    <div>
+                        <h3 class="font-headline-sm text-headline-sm">Tendência de Serviços (Últimos 7 dias)</h3>
+                        <p class="text-on-surface-variant text-body-md mt-xs">Evolução diária de novos serviços contratados</p>
+                    </div>
+                    <button class="download-btn" onclick="downloadChart('chartLineServices')">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                        Baixar
+                    </button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartLineServices"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico 4: Desempenho dos Profissionais -->
+            <div class="metric-card shadow-level-1 mb-xl">
+                <div class="flex justify-between items-center mb-lg">
+                    <div>
+                        <h3 class="font-headline-sm text-headline-sm">Top 10 Profissionais por Avaliação</h3>
+                        <p class="text-on-surface-variant text-body-md mt-xs">Ranking de profissionais mais bem avaliados</p>
+                    </div>
+                    <button class="download-btn" onclick="downloadChart('chartBarProfessionals')">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                        Baixar
+                    </button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartBarProfessionals"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico 5: Radar Chart - Métricas de Qualidade -->
+            <div class="metric-card shadow-level-1 mb-xl">
+                <div class="flex justify-between items-center mb-lg">
+                    <div>
+                        <h3 class="font-headline-sm text-headline-sm">Métricas de Qualidade Operacional</h3>
+                        <p class="text-on-surface-variant text-body-md mt-xs">Análise multidimensional de performance</p>
+                    </div>
+                    <button class="download-btn" onclick="downloadChart('chartRadarQuality')">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                        Baixar
+                    </button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartRadarQuality"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico 6: Comparativo Mensal -->
+            <div class="metric-card shadow-level-1">
+                <div class="flex justify-between items-center mb-lg">
+                    <div>
+                        <h3 class="font-headline-sm text-headline-sm">Comparativo de Receita (Últimos 6 Meses)</h3>
+                        <p class="text-on-surface-variant text-body-md mt-xs">Análise de crescimento de faturamento</p>
+                    </div>
+                    <button class="download-btn" onclick="downloadChart('chartComparativeMontly')">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                        Baixar
+                    </button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartComparativeMontly"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Gráfico 1: Status de Serviços
+        new Chart(document.getElementById('chartBarServices'), {
+            type: 'bar',
+            data: {
+                labels: ['Finalizado', 'Em Andamento', 'Pendente', 'Cancelado'],
+                datasets: [{
+                    label: 'Quantidade de Serviços',
+                    data: [134, 56, 12, 4],
+                    backgroundColor: ['#34a853', '#fbbc05', '#5f6368', '#ea4335'],
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                indexAxis: 'x',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleFont: { family: 'Inter', size: 14, weight: '600' },
+                        bodyFont: { family: 'Inter', size: 13 },
+                        padding: 12,
+                        borderRadius: 8,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false },
+                        grid: { drawBorder: false, color: '#ebeef4' }
+                    },
+                    x: {
+                        border: { display: false },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Gráfico 2: Receita por Categoria (Donut)
+        new Chart(document.getElementById('chartPieRecipe'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Limpeza', 'Manutenção', 'Reforma', 'Elétrica', 'Encanação'],
+                datasets: [{
+                    data: [18500, 16200, 12300, 5600, 2200],
+                    backgroundColor: ['#005bbf', '#1a73e8', '#34a853', '#fbbc05', '#ea4335'],
+                    borderColor: '#ffffff',
+                    borderWidth: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: 'Inter', size: 12 },
+                            padding: 15,
+                            color: '#181c20',
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleFont: { family: 'Inter', size: 14, weight: '600' },
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = 'R$ ' + context.parsed.y + ' K';
+                                return label + ': ' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico 3: Tendência de Serviços
+        new Chart(document.getElementById('chartLineServices'), {
+            type: 'line',
+            data: {
+                labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
+                datasets: [{
+                    label: 'Serviços Contratados',
+                    data: [32, 28, 45, 52, 48, 35, 28],
+                    borderColor: '#005bbf',
+                    backgroundColor: 'rgba(0, 91, 191, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#005bbf',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: { family: 'Inter', size: 13, weight: '600' },
+                            color: '#181c20',
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleFont: { family: 'Inter', size: 14, weight: '600' },
+                        padding: 12,
+                        borderRadius: 8,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false },
+                        grid: { color: '#ebeef4' },
+                    },
+                    x: {
+                        border: { display: false },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Gráfico 4: Desempenho dos Profissionais
+        new Chart(document.getElementById('chartBarProfessionals'), {
+            type: 'barHorizontal',
+            data: {
+                labels: ['Carlos Silva', 'João Técnico', 'Pedro Encanador', 'Maria Limpeza', 'Antonio Marceneiro', 'Francisca Costura', 'Leonardo Pintor', 'Roberta Jardinagem', 'Thiago Eletricista', 'Camila Consultora'],
+                datasets: [{
+                    label: 'Avaliação Média',
+                    data: [4.9, 4.8, 4.7, 4.9, 4.6, 4.8, 4.7, 4.5, 4.9, 4.6],
+                    backgroundColor: '#1a73e8',
+                    borderRadius: 8,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        callbacks: {
+                            label: function(context) {
+                                return '★ ' + context.parsed.x + ' / 5.0';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 5,
+                        border: { display: false },
+                        grid: { color: '#ebeef4' }
+                    },
+                    y: {
+                        border: { display: false },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Gráfico 5: Radar Chart
+        new Chart(document.getElementById('chartRadarQuality'), {
+            type: 'radar',
+            data: {
+                labels: ['Pontualidade', 'Qualidade', 'Satisfação', 'Segurança', 'Inovação', 'Custo-Efetividade'],
+                datasets: [{
+                    label: 'Meta',
+                    data: [95, 90, 92, 88, 85, 87],
+                    borderColor: '#e0e0e0',
+                    backgroundColor: 'rgba(224, 224, 224, 0.1)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                },
+                {
+                    label: 'Desempenho Atual',
+                    data: [92, 88, 89, 86, 82, 84],
+                    borderColor: '#005bbf',
+                    backgroundColor: 'rgba(0, 91, 191, 0.2)',
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: { family: 'Inter', size: 12, weight: '600' },
+                            padding: 15,
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 100,
+                        grid: { color: '#ebeef4' },
+                        ticks: { font: { family: 'Inter' } }
+                    }
+                }
+            }
+        });
+
+        // Gráfico 6: Comparativo Mensal
+        new Chart(document.getElementById('chartComparativeMontly'), {
+            type: 'bar',
+            data: {
+                labels: ['Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro'],
+                datasets: [{
+                    label: 'Receita',
+                    data: [42300, 45600, 50200, 48900, 54800, 58500],
+                    backgroundColor: ['#005bbf', '#1a73e8', '#34a853', '#fbbc05', '#ea4335', '#795900'],
+                    borderRadius: 8,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        callbacks: {
+                            label: function(context) {
+                                return 'R$ ' + context.parsed.y.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false },
+                        grid: { color: '#ebeef4' },
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + (value / 1000).toFixed(0) + 'K';
+                            }
+                        }
+                    },
+                    x: {
+                        border: { display: false },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Função para baixar gráfico como imagem
+        function downloadChart(chartId) {
+            const canvas = document.getElementById(chartId);
+            const image = canvas.toDataURL('image/png', 1.0);
+            const link = document.createElement('a');
+            link.href = image;
+            link.download = `grafico-${chartId}-${new Date().toISOString().split('T')[0]}.png`;
+            link.click();
+        }
+    </script>
+</body>
+</html>
